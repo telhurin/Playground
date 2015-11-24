@@ -7,7 +7,11 @@ public class DoorOpenDevice : MonoBehaviour
     private Vector3 dPos;
     [SerializeField]
     private DoorsType doorsType = DoorsType.manual;
+    [SerializeField]
+    private AudioClip doorSound;
+
     private Vector3 startPosition;
+    private AudioSource audioSource;
 
     private bool canOpen;
     private bool isLerping;
@@ -20,6 +24,8 @@ public class DoorOpenDevice : MonoBehaviour
         lerpingPercent = 0f;
         canOpen = true;
         isLerping = false;
+
+        audioSource = GetComponent<AudioSource>();
     }
 
     public void Operate()
@@ -28,6 +34,7 @@ public class DoorOpenDevice : MonoBehaviour
         {
             isLerping = true;
             canOpen = !canOpen;
+            audioSource.PlayOneShot(doorSound);
         }
     }
 
@@ -35,14 +42,14 @@ public class DoorOpenDevice : MonoBehaviour
     {
         isLerping = true;
         canOpen = false;
-        Debug.Log(isLerping);
-        Debug.Log(canOpen);
+        audioSource.PlayOneShot(doorSound);
     }
 
     public void Deactivate()
     {
         isLerping = true;
         canOpen = true;
+        audioSource.PlayOneShot(doorSound);
     }
 
     void FixedUpdate()
@@ -52,7 +59,6 @@ public class DoorOpenDevice : MonoBehaviour
         {
             lerpingPercent += 0.025f;
             transform.position = Vector3.Lerp(startPosition, startPosition + dPos, lerpingPercent);
-            Debug.Log(lerpingPercent);
         }
 
         if (isLerping && canOpen)
